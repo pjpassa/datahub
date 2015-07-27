@@ -16,8 +16,10 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from user_registration import urls as user_reg
+from user_profiles import urls as user_prof
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^register/', include(user_reg)),
+    url(r'^admin/', include(admin.site.urls), name="admin"),
+    url(r'^register/', include(user_reg), name="admin"),
+    url(r'^profile/', include(user_prof), name="admin"),
 ]
