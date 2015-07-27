@@ -60,4 +60,3 @@ target/
 .idea/
 *.sqlite3
 .direnv
-.envrc
