@@ -1,3 +1,6 @@
 from django.contrib import admin
+from data_analysis.models import Dataset, Project
 
-# Register your models here.
+
+admin.site.register(Dataset)
+admin.site.register(Project)
