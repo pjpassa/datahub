@@ -10,7 +10,6 @@ class DatafileUploadView(FormView):
     success_url = reverse_lazy("profile:list")
 
     def form_valid(self, form):
-        print("I am here")
         handle_datafile_upload(self.get_form_kwargs().get('files')['file'],
                                self.get_form_kwargs().get('data'),
                                self.request.user)
