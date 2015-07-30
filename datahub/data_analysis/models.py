@@ -1,9 +1,7 @@
-import collections
+from django.core.urlresolvers import reverse_lazy
 from django.db import models
-import pandas as pd
 from picklefield import PickledObjectField
 from user_profiles.models import Profile
-from jsonfield import JSONField
 
 
 class Project(models.Model):
@@ -13,6 +11,20 @@ class Project(models.Model):
     class Meta:
         unique_together = ("name", "profile")
 
+    def __str__(self):
+        return "{}/{}".format(self.profile.user.username, self.name)
+
+    @property
+    def link(self):
+        return reverse_lazy("data_analysis:project_detail",
+                            kwargs={"username": self.profile.user.username,
+                                    "project": self.name})
+
+    def dataset_upload_link(self):
+        return reverse_lazy("data_analysis:upload",
+                            kwargs={"username": self.profile.user.username,
+                                    "project": self.name})
+
 
 class Dataset(models.Model):
     name = models.CharField(max_length=64)
@@ -21,6 +33,11 @@ class Dataset(models.Model):
 
     class Meta:
         unique_together = ("name", "project")
+
+    def __str__(self):
+        return "{}/{}/{}".format(self.project.profile.user.username,
+                                 self.project.name,
+                                 self.name)
 
     def as_html(self, num_rows=0, head=None):
         df = self.data
@@ -36,3 +53,10 @@ class Dataset(models.Model):
     @property
     def head_as_html(self):
         return self.as_html(20, True)
+
+    @property
+    def link(self):
+        return reverse_lazy("data_analysis:dataset_detail",
+                            kwargs={"username": self.project.profile.user.username,
+                                    "project": self.project.name,
+                                    "dataset": self.name})

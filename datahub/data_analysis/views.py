@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 from data_analysis.models import Dataset, Project
+from fileupload.forms import DatafileUploadForm
 
 
 class DatasetListView(ListView):
@@ -44,6 +45,7 @@ class ProjectListView(ListView):
 
 class ProjectDetailView(DetailView):
     model = Project
+    template_name = "data_analysis/project_detail.html"
 
     def get_object(self, queryset=None):
         username = self.kwargs.get("username", None)
@@ -59,6 +61,11 @@ class ProjectDetailView(DetailView):
             raise Http404(_("No %(verbose_name)s found matching the query") %
                           {'verbose_name': Project._meta.verbose_name})
         return project
+
+    def get_context_data(self, **kwargs):
+        context = {"upload_form": DatafileUploadForm}
+        context.update(kwargs)
+        return super().get_context_data(**context)
 
 
 class ProjectDeleteView(DeleteView):

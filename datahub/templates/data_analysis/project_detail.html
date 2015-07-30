@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block body %}
+    {% if request.user == object.profile.user %}
+        <div>
+        <form method="POST" action="{{ object.dataset_upload_link }}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ upload_form.as_p }}
+            <input type="submit" name="upload">
+        </form>
+        </div>
+    {% endif %}
+    {% for dataset in object.dataset_set.all %}
+        <a href="{{ dataset.link }}">{{ dataset.name }}</a>
+    {% endfor %}
+{% endblock %}

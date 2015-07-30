@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <p><a href="{{ object.project.link }}">{{ object.project.name }}</a></p>
     {{ object.head_as_html|safe }}
 {% endblock %}
