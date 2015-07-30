@@ -21,8 +21,18 @@ class Dataset(models.Model):
     class Meta:
         unique_together = ("name", "project")
 
-    def as_html(self, num_rows=0, head=None):
+    def get_dataframe(self):
         df = pd.DataFrame(data=self.data)
+        temp = df.head()
+        try:
+            df.index = df.index.astype(int)
+            print(temp)
+        except ValueError:
+            pass
+        return df
+
+    def as_html(self, num_rows=0, head=None):
+        df = self.get_dataframe()
         if num_rows:
             if head is None:
                 raise ValueError("num_rows was defined, but head was not set. Define head as True or False")
