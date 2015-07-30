@@ -6,4 +6,14 @@
         <p>{{ object.email }}</p>
         <p>{{ object.user.username }}</p>
     </div>
+    <div>
+        <p></p>
+        {% for project in profile.project_set.all %}
+            {% for dataset in project.dataset_set.all %}
+                <p><a href="{% url "data_analysis:dataset_detail" username=request.user.username project=project.name dataset=dataset.name %}">{{ dataset.name }}</a></p>
+            {% endfor %}
+        {% endfor %}
+
+        <p></p>
+    </div>
 {% endblock %}

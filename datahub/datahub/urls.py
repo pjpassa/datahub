@@ -18,10 +18,12 @@ from django.contrib import admin
 from user_registration import urls as user_reg
 from user_profiles import urls as user_prof
 from fileupload import urls as upload
+from data_analysis import urls as data_analysis
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls), name="admin"),
     url(r'^register/', include(user_reg, namespace="register")),
     url(r'^profile/', include(user_prof, namespace="profile")),
     url(r'^upload/', include(upload, namespace="upload")),
+    url(r'^/', include(data_analysis, namespace="data_analysis")),
 ]
