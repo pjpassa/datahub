@@ -10,7 +10,6 @@ def handle_datafile_upload(file, form, user, project=None):
         df = pd.read_csv(file)
     else:
         df = pd.read_csv(file, header=None)
-        df.columns = [str(index) for index, _ in enumerate(df.columns)]
     name = form.get("name") or str(file).split(".")[0]
-    dataset = Dataset(data=df.to_json(), project=project, name=name)
+    dataset = Dataset(data=df, project=project, name=name)
     dataset.save()

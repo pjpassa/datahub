@@ -1,6 +1,7 @@
 import collections
 from django.db import models
 import pandas as pd
+from picklefield import PickledObjectField
 from user_profiles.models import Profile
 from jsonfield import JSONField
 
@@ -16,23 +17,13 @@ class Project(models.Model):
 class Dataset(models.Model):
     name = models.CharField(max_length=64)
     project = models.ForeignKey(Project)
-    data = JSONField(load_kwargs={'object_pairs_hook': collections.OrderedDict})
+    data = PickledObjectField()
 
     class Meta:
         unique_together = ("name", "project")
 
-    def get_dataframe(self):
-        df = pd.DataFrame(data=self.data)
-        temp = df.head()
-        try:
-            df.index = df.index.astype(int)
-            print(temp)
-        except ValueError:
-            pass
-        return df
-
     def as_html(self, num_rows=0, head=None):
-        df = self.get_dataframe()
+        df = self.data
         if num_rows:
             if head is None:
                 raise ValueError("num_rows was defined, but head was not set. Define head as True or False")
