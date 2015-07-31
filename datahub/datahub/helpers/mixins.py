@@ -28,3 +28,10 @@ class AddUserToFormMixin:
         obj = form.save(commit=False)
         obj.user = self.request.user
         return super().form_valid(form)
+
+
+class AddProfileToFormMixin:
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.profile = self.request.user.profile
+        return super().form_valid(form)

@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from user_profiles.views import ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDetailView
 from user_registration import urls as user_reg
 from user_profiles import urls as user_prof
-from fileupload import urls as upload
 from data_analysis import urls as data_analysis
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls), name="admin"),
     url(r'^register/', include(user_reg, namespace="register")),
     url(r'^profile/', include(user_prof, namespace="profile")),
-    url(r'^upload/', include(upload, namespace="upload")),
     url(r'^', include(data_analysis, namespace="data_analysis")),
+    url(r'^$', ProfileListView.as_view(), name="home"),
+    url(r'^new_profile/$', ProfileCreateView.as_view(), name="creation"),
+    url(r'^update_profile/$', ProfileUpdateView.as_view(), name="update"),
+    url(r'^(?P<username>\w+)/$', ProfileDetailView.as_view(), name="user_profile"),
 ]

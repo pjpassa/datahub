@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 from data_analysis.models import Dataset, Project
+from datahub.helpers.mixins import ProvideProfileMixin, AddProfileToFormMixin
 from fileupload.forms import DatafileUploadForm
 
 
@@ -72,5 +74,10 @@ class ProjectDeleteView(DeleteView):
     model = Project
 
 
-class ProjectCreateView(CreateView):
+class ProjectCreateView(AddProfileToFormMixin, CreateView):
     model = Project
+    template_name = 'create_view.html'
+    fields = ['name']
+
+    def get_success_url(self):
+        return reverse_lazy("user_profile", kwargs={"username": self.request.user.username})

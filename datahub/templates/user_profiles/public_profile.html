@@ -8,6 +8,9 @@
     </div>
     <div>
         <p></p>
+        {% if request.user == object.user %}
+            <a href="{% url "data_analysis:create_project" %}">Start new project</a>
+        {% endif %}
         {% for project in profile.project_set.all %}
                 <p><a href="{{ project.link }}">{{ project.name }}</a></p>
         {% endfor %}
