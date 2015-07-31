@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from data_analysis.views import DatasetDetailView, ProjectDetailView, ProjectCreateView, ProjectDeleteView, \
-    DatasetDeleteView
+    DatasetDeleteView, DatasetQueryView, dataset_query_view
 from fileupload.views import DatafileUploadView
 
 urlpatterns = [
@@ -20,4 +20,8 @@ urlpatterns = [
     url(r'^(?P<username>[-_\w]+)/(?P<project>[-_\w]+)/$',
         ProjectDetailView.as_view(),
         name="project_detail"),
+    url(r'^(?P<username>[-_\w]+)/(?P<project>[-_\w]+)/(?P<dataset>[-_\w]+)/query/$',
+        dataset_query_view,
+        name="dataset_query"),
+
 ]

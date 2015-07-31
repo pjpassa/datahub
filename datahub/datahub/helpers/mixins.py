@@ -58,16 +58,19 @@ class ProvideDatasetFromURLMixin:
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
+            print("User does not exist")
             raise Http404(("No %(verbose_name)s found matching the query") %
                           {'verbose_name': User._meta.verbose_name})
         try:
             project = Project.objects.get(profile=user.profile, name=project_name)
         except Project.DoesNotExist:
+            print("Project does not exist")
             raise Http404(("No %(verbose_name)s found matching the query") %
                           {'verbose_name': Project._meta.verbose_name})
         try:
             dataset = Dataset.objects.get(project=project, name=dataset_name)
         except Dataset.DoesNotExist:
+            print("Dataset does not exist")
             raise Http404(("No %(verbose_name)s found matching the query") %
                           {'verbose_name': Dataset._meta.verbose_name})
         return dataset
@@ -81,11 +84,13 @@ class ProvideProjectFromURLMixin:
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
+            print("User does not exist")
             raise Http404(("No %(verbose_name)s found matching the query") %
                           {'verbose_name': User._meta.verbose_name})
         try:
             project = Project.objects.get(profile=user.profile, name=project_name)
         except Project.DoesNotExist:
+            print("Project does not exist")
             raise Http404(("No %(verbose_name)s found matching the query") %
                           {'verbose_name': Project._meta.verbose_name})
         return project

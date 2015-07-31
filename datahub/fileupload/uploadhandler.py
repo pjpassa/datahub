@@ -7,9 +7,9 @@ def handle_datafile_upload(file, form, user, project=None):
         project = Project(profile=user.profile)
         project.save()
     if form.get("has_header_row"):
-        df = pd.read_csv(file)
+        df = pd.read_csv(file, encoding="utf-8")
     else:
-        df = pd.read_csv(file, header=None)
+        df = pd.read_csv(file, header=None, encoding="utf-8")
     name = form.get("name") or str(file).split(".")[0]
     dataset = Dataset(data=df, project=project, name=name)
     dataset.save()

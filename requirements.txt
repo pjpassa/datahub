@@ -1,7 +1,9 @@
 Django==1.8.3
+django-picklefield==0.3.1
 -e git+https://github.com/yigor/django-jsonfield.git@60bc57449ca76e1814d915eee135185e50108778#egg=jsonfield-master
 numpy==1.9.2
 pandas==0.16.2
+pandasql==0.6.3
 python-dateutil==2.4.2
 pytz==2015.4
 six==1.9.0

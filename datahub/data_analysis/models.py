@@ -55,6 +55,13 @@ class Dataset(models.Model):
         return self.as_html(20, True)
 
     @property
+    def query_link(self):
+        return reverse_lazy("data_analysis:dataset_query",
+                            kwargs={"username": self.project.profile.user.username,
+                                    "project": self.project.name,
+                                    "dataset": self.name})
+
+    @property
     def link(self):
         return reverse_lazy("data_analysis:dataset_detail",
                             kwargs={"username": self.project.profile.user.username,

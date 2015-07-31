@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <h2>Available Datasets</h2>
+    <ul>
+        {% for data in object.project.dataset_set.all %}
+            <li>{{ data.name }}{% if data.name == object.name %} *{% endif %} </li>
+        {% endfor %}
+
+    </ul>
+    <p>* - Current Dataset</p>
+    <form method="post" action="{{ object.query_link }}">
+        {% csrf_token %}
+        {{ code_form.as_p }}
+        <input type="submit" value="run">
+    </form>
+
+
     <form method="post" action="{{ object.link }}delete/">
         {% csrf_token %}
         <p><input type="submit" value="delete dataset"></p>

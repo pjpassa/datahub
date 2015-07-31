@@ -1,11 +1,14 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-from django.http import Http404
-from django.views.generic import ListView, DetailView, DeleteView, CreateView
+from django.shortcuts import render, render_to_response
+from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
+from pandasql import sqldf
+from data_analysis.forms import CodeForm
 from data_analysis.models import Dataset, Project
 from datahub.helpers.mixins import AddProfileToFormMixin, VerifyUserBeforeDeletionMixin, ProvideProjectFromURLMixin, \
     ProvideDatasetFromURLMixin
 from fileupload.forms import DatafileUploadForm
+import pandas
 
 
 class DatasetListView(ListView):
@@ -15,6 +18,11 @@ class DatasetListView(ListView):
 class DatasetDetailView(ProvideDatasetFromURLMixin, DetailView):
     model = Dataset
     template_name = "data_analysis/dataset_head.html"
+
+    def get_context_data(self, **kwargs):
+        context = {"code_form": CodeForm}
+        context.update(kwargs)
+        return super().get_context_data(**context)
 
 
 class DatasetDeleteView(ProvideDatasetFromURLMixin, VerifyUserBeforeDeletionMixin, DeleteView):
@@ -54,3 +62,28 @@ class ProjectCreateView(AddProfileToFormMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy("data_analysis:user_profile", kwargs={"username": self.request.user.username})
+
+
+class DatasetQueryView(ProvideDatasetFromURLMixin, UpdateView):
+    template_name = 'data_analysis/dataset_query.html'
+
+    def get_context_data(self, **kwargs):
+        context = {"code_form": CodeForm}
+        context.update(kwargs)
+        return super().get_context_data(**context)
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+def dataset_query_view(request, username, project, dataset):
+    if request.POST:
+        user = User.objects.get(username=username)
+        project = Project.objects.get(name=project, profile=user.profile)
+        dataset = Dataset.objects.get(name=dataset, project=project)
+        datasets = {data.name: data.data for data in project.dataset_set.all()}
+        code = request.POST.get("code")
+        context = {'result': sqldf(code, datasets).head(20).to_html(),
+                   object: dataset,
+                   code: code}
+        return render_to_response("data_analysis/dataset_query.html", context=context)
