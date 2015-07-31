@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <form method="post" action="{{ object.link }}delete/">
+        {% csrf_token %}
+        <p><input type="submit" value="delete dataset"></p>
+    </form>
     <p><a href="{{ object.project.link }}">{{ object.project.name }}</a></p>
     {{ object.head_as_html|safe }}
 {% endblock %}
