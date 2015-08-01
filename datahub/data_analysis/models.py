@@ -1,11 +1,13 @@
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from picklefield import PickledObjectField
+from datahub.helpers.validators import start_with_letter_validator, contains_only_letters_dash_underscore_validator
 from user_profiles.models import Profile
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=64, validators=[start_with_letter_validator,
+                                                       contains_only_letters_dash_underscore_validator])
     profile = models.ForeignKey(Profile)
 
     class Meta:
@@ -27,7 +29,8 @@ class Project(models.Model):
 
 
 class Dataset(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=128, validators=[start_with_letter_validator,
+                                                        contains_only_letters_dash_underscore_validator])
     project = models.ForeignKey(Project)
     data = PickledObjectField()
 
