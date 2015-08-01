@@ -5,6 +5,14 @@
     <title>DataHub</title>
 </head>
 <body>
+    <nav>
+        {% if not request.user.is_authenticated %}
+            <a href="{% url "login" %}">login</a>
+            <a href="{% url "register:register" %}">register</a>
+        {% else %}
+            <a href="{% url "logout" %}">logout</a>
+        {% endif %}
+    </nav>
 {% block body %}
 
 {% endblock %}

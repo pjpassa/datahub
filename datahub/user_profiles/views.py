@@ -28,5 +28,8 @@ class ProfileUpdateView(ProvideProfileMixin, UpdateView):
 class ProfileCreateView(LoginRequiredMixin, AddUserToFormMixin, CreateView):
     model = Profile
     template_name = 'create_view.html'
-    success_url = reverse_lazy("profile:update")
+    success_url = reverse_lazy("user_profile")
     fields = ['name', 'email']
+
+    def get_success_url(self):
+        return reverse_lazy("user_profile", kwargs={"username": self.request.user.username})

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render_to_response
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
 from pandasql import sqldf
 from data_analysis.forms import CodeForm
@@ -8,7 +8,6 @@ from data_analysis.models import Dataset, Project
 from datahub.helpers.mixins import AddProfileToFormMixin, VerifyUserBeforeDeletionMixin, ProvideProjectFromURLMixin, \
     ProvideDatasetFromURLMixin
 from fileupload.forms import DatafileUploadForm
-import pandas
 
 
 class DatasetListView(ListView):
@@ -29,8 +28,9 @@ class DatasetDeleteView(ProvideDatasetFromURLMixin, VerifyUserBeforeDeletionMixi
     model = Dataset
 
     def get_success_url(self):
-        return reverse_lazy("data_analysis:project", kwargs={"username": self.kwargs.get("username"),
-                                               "project": self.kwargs.get("project")})
+        return reverse_lazy("data_analysis:project",
+                            kwargs={"username": self.kwargs.get("username"),
+                                    "project": self.kwargs.get("project")})
 
 
 class ProjectListView(ListView):
@@ -61,7 +61,9 @@ class ProjectCreateView(AddProfileToFormMixin, CreateView):
     fields = ['name']
 
     def get_success_url(self):
-        return reverse_lazy("data_analysis:user_profile", kwargs={"username": self.request.user.username})
+        return reverse_lazy("data_analysis:project_detail",
+                            kwargs={"username": self.request.user.username,
+                                    "project": self.get_form_kwargs().get("data").get("name")})
 
 
 class DatasetQueryView(ProvideDatasetFromURLMixin, UpdateView):
