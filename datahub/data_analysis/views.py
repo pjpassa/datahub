@@ -28,7 +28,7 @@ class DatasetDeleteView(ProvideDatasetFromURLMixin, VerifyUserBeforeDeletionMixi
     model = Dataset
 
     def get_success_url(self):
-        return reverse_lazy("data_analysis:project",
+        return reverse_lazy("data_analysis:project_detail",
                             kwargs={"username": self.kwargs.get("username"),
                                     "project": self.kwargs.get("project")})
 
