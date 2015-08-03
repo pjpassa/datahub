@@ -6,8 +6,9 @@ from user_profiles.models import Profile
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=64, validators=[start_with_letter_validator,
-                                                       contains_only_letters_dash_underscore_validator])
+    name = models.CharField(max_length=64,
+                            validators=[start_with_letter_validator,
+                                        contains_only_letters_dash_underscore_validator])
     profile = models.ForeignKey(Profile)
 
     class Meta:
@@ -29,8 +30,9 @@ class Project(models.Model):
 
 
 class Dataset(models.Model):
-    name = models.CharField(max_length=128, validators=[start_with_letter_validator,
-                                                        contains_only_letters_dash_underscore_validator])
+    name = models.CharField(max_length=128,
+                            validators=[start_with_letter_validator,
+                                        contains_only_letters_dash_underscore_validator])
     project = models.ForeignKey(Project)
     data = PickledObjectField()
 
