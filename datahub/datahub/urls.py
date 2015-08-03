@@ -19,7 +19,6 @@ from django.contrib.auth.views import login
 from django.core.urlresolvers import reverse_lazy
 from user_profiles.views import ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDetailView
 from user_registration import urls as user_reg
-from user_profiles import urls as user_prof
 from data_analysis import urls as data_analysis
 
 urlpatterns = [
@@ -29,12 +28,11 @@ urlpatterns = [
         'django.contrib.auth.views.logout',
         name='logout',
         kwargs={'next_page': reverse_lazy("home")}),
+    url(r'^accounts/login/$', login, name="login"),
     url('^accounts/', include('django.contrib.auth.urls')),
     url(r'^$', ProfileListView.as_view(), name="home"),
     url(r'^new_profile/$', ProfileCreateView.as_view(), name="profile_creation"),
     url(r'^update_profile/$', ProfileUpdateView.as_view(), name="update"),
-    url(r'^login/$', login, name="login"),
-    url('^', include('django.contrib.auth.urls')),
     url(r'^(?P<username>[-_\w]+)/$', ProfileDetailView.as_view(), name="user_profile"),
     url(r'^', include(data_analysis, namespace="data_analysis")),
 ]
