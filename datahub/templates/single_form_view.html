@@ -3,7 +3,7 @@
 
 {% block body %}
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-md-6 col-md-offset-2">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -17,9 +17,12 @@
                                 {% for field in form %}
                                     <div class="form-group">
                                         {% if forloop.first %}
-                                            {% render_field field class+="form-control" placeholder=field.label autofocus="" %} {% firstof field.errors field.help_text %}
+                                            {% render_field field class+="form-control" placeholder=field.label autofocus="" data-toggle="tooltip" data-placement="right" data-original-title=field.help_text %}
                                         {% else %}
-                                            {% render_field field class+="form-control" placeholder=field.label %} {% firstof field.errors field.help_text %}
+                                            {% render_field field class+="form-control" placeholder=field.label data-toggle="tooltip" data-placement="right" data-original-title=field.help_text %}
+                                        {% endif %}
+                                        {% if field.errors %}
+                                            <div class="alert alert-danger">{{ field.errors }}</div>
                                         {% endif %}
                                     </div>
                                 {% endfor %}
