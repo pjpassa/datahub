@@ -9,4 +9,3 @@ class DatasetRetrieveAPIView(ProvideDatasetFromURLMixin, generics.RetrieveAPIVie
 
     def get_queryset(self):
         return Dataset.objects.all()
-
