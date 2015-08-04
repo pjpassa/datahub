@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
-from datahub.helpers.mixins import ProvideProfileMixin, AddUserToFormMixin, LoginRequiredMixin
+from datahub.helpers.mixins import ProvideProfileMixin, AddUserToFormMixin, LoginRequiredMixin, AddContextInAsViewMixin
 from user_profiles.models import Profile
 
 
@@ -18,17 +18,20 @@ class ProfileListView(ListView):
     template_name = 'user_profiles/profile_list.html'
 
 
-class ProfileUpdateView(ProvideProfileMixin, UpdateView):
+class ProfileUpdateView(AddContextInAsViewMixin, ProvideProfileMixin, UpdateView):
+    additional_context = {"panel_title": "Update Profile", "submit_button_name": "Update"}
     model = Profile
-    template_name = 'user_profiles/profile_update.html'
-    success_url = reverse_lazy("profile:update")
+    template_name = 'single_form_view.html'
     fields = ['name', 'email']
 
+    def get_success_url(self):
+        return reverse_lazy("user_profile", kwargs={"username": self.request.user.username})
 
-class ProfileCreateView(LoginRequiredMixin, AddUserToFormMixin, CreateView):
+
+class ProfileCreateView(AddContextInAsViewMixin, LoginRequiredMixin, AddUserToFormMixin, CreateView):
+    additional_context = {"panel_title": "Create Profile", "submit_button_name": "Create"}
     model = Profile
-    template_name = 'create_view.html'
-    success_url = reverse_lazy("user_profile")
+    template_name = 'single_form_view.html'
     fields = ['name', 'email']
 
     def get_success_url(self):

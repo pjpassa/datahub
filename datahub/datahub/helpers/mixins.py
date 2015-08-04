@@ -94,3 +94,12 @@ class ProvideProjectFromURLMixin:
             raise Http404(("No %(verbose_name)s found matching the query") %
                           {'verbose_name': Project._meta.verbose_name})
         return project
+
+
+class AddContextInAsViewMixin:
+    additional_context = {}
+
+    def get_context_data(self, **kwargs):
+        context = self.additional_context
+        context.update(**kwargs)
+        return super().get_context_data(**context)

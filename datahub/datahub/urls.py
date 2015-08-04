@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth.views import login
 from django.core.urlresolvers import reverse_lazy
 from user_profiles.views import ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDetailView
 from user_registration import urls as user_reg
 from data_analysis import urls as data_analysis
 from api import urls as api_url
+from user_registration.views import LoginView
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls), name="admin"),
@@ -29,7 +30,7 @@ urlpatterns = [
         'django.contrib.auth.views.logout',
         name='logout',
         kwargs={'next_page': reverse_lazy("home")}),
-    url(r'^accounts/login/$', login, name="login"),
+    url(r'^accounts/login/$', LoginView.as_view(additional_context={"panel_title": "Please Log In", "submit_button_name": "Login"}), name="login"),
     url('^accounts/', include('django.contrib.auth.urls')),
     url(r'^$', ProfileListView.as_view(), name="home"),
     url(r'^new_profile/$', ProfileCreateView.as_view(), name="profile_creation"),
