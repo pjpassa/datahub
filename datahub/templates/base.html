@@ -270,7 +270,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-user">
+                    <ul class="dropdown-menu dropdown-messages">
                         {% if request.user.is_authenticated %}
                             <li><a href="{% url "user_profile" username=request.user.username %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
                             </li>
@@ -283,7 +283,7 @@
                             <li><a href="{% url "register:register" %}"><i class="fa fa-user fa-fw"></i> Register</a>
                             </li>
                             <li class="divider"></li>
-                            <li><a href="{% url "login" %}"><i class="fa fa-sign-out fa-fw"></i> Login</a>
+                            <li><a href="{% url "login" %}"><i class="fa fa-sign-in fa-fw"></i> Login</a>
                             </li>
                         {% endif %}
                     </ul>

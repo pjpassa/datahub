@@ -14,12 +14,13 @@
         {{ code_form.as_p }}
         <input type="submit" value="run">
     </form>
-
-
+    {% if request.user == object.project.profile.user %}
+    <p></p>
     <form method="post" action="{{ object.link }}delete/">
         {% csrf_token %}
         <p><input type="submit" value="delete dataset"></p>
     </form>
+    {% endif %}
     <p><a href="{{ object.project.link }}">{{ object.project.name }}</a></p>
     {{ object.head_as_html|safe }}
 {% endblock %}

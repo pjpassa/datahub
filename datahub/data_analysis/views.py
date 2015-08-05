@@ -6,7 +6,7 @@ from pandasql import sqldf
 from data_analysis.forms import CodeForm
 from data_analysis.models import Dataset, Project
 from datahub.helpers.mixins import AddProfileToFormMixin, VerifyUserBeforeDeletionMixin, ProvideProjectFromURLMixin, \
-    ProvideDatasetFromURLMixin
+    ProvideDatasetFromURLMixin, AddContextInAsViewMixin
 from fileupload.forms import DatafileUploadForm
 
 
@@ -55,10 +55,12 @@ class ProjectDeleteView(ProvideProjectFromURLMixin, VerifyUserBeforeDeletionMixi
         return reverse_lazy("user_profile", kwargs={"username": self.request.user.username})
 
 
-class ProjectCreateView(AddProfileToFormMixin, CreateView):
+class ProjectCreateView(AddContextInAsViewMixin, AddProfileToFormMixin, CreateView):
     model = Project
-    template_name = 'create_view.html'
+    template_name = 'single_form_view.html'
     fields = ['name']
+    additional_context = {"panel_title": "Create Project",
+                          "submit_button_name": "Create"}
 
     def get_success_url(self):
         return reverse_lazy("data_analysis:project_detail",
