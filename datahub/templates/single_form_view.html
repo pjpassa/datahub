@@ -23,12 +23,23 @@
                                             <div class="form-group">
                                         {% endif %}
                                         {% if forloop.first %}
-                                            {% render_field field class+="form-control" placeholder=field.label autofocus="" data-toggle="tooltip" data-placement="right" data-original-title=field.help_text %}
+                                            {% if field|widget_type == "clearablefileinput" %}
+                                            {% render_field field %}
+                                            {% else %}
+                                            {% render_field field class+="form-control" placeholder=field.label autofocus="" %}
+                                        {% endif %}
                                         {% else %}
-                                            {% render_field field class+="form-control" placeholder=field.label data-toggle="tooltip" data-placement="right" data-original-title=field.help_text %}
+                                            {% if field|widget_type == "checkboxinput" %}
+                                                {% render_field field class+="form-checkbox"%} <label>{{ field.label }}</label>
+                                            {% else %}
+                                                {% render_field field class+="form-control" placeholder=field.label %}
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if field.help_text %}
+                                            <p class = "help-block">{{ field.help_text }}</p>
                                         {% endif %}
                                         {% if field.errors %}
-                                            <div class="alert alert-danger">{{ field.errors }}</div>
+                                            <div class="alert alert-danger"><p>{{ field.errors }}</p></div>
                                         {% endif %}
                                     </div>
                                 {% endfor %}

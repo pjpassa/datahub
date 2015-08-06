@@ -2,9 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-
-# Create your views here.
-from django.views.generic import FormView, CreateView
+from django.views.generic import FormView
 from datahub.helpers.mixins import AddContextInAsViewMixin
 
 

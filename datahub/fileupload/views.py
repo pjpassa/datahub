@@ -4,11 +4,13 @@ from django.views.generic import FormView
 from data_analysis.models import Project
 from fileupload.forms import DatafileUploadForm
 from fileupload.uploadhandler import handle_datafile_upload
+from datahub.helpers.mixins import AddContextInAsViewMixin
 
 
-class DatafileUploadView(FormView):
-    template_name = 'fileupload/datafile_upload.html'
+class DatafileUploadView(AddContextInAsViewMixin, FormView):
+    template_name = 'single_form_view.html'
     form_class = DatafileUploadForm
+    additional_context = {"panel_title": "Upload New File", "submit_button_name": "Upload"}
 
     def form_valid(self, form):
         user = User.objects.get(username=self.kwargs.get("username"))
