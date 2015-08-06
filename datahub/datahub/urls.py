@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^$', ProfileListView.as_view(), name="home"),
     url(r'^new_profile/$', ProfileCreateView.as_view(), name="profile_creation"),
     url(r'^update_profile/$', ProfileUpdateView.as_view(), name="update"),
+    url(r'^api/', include(api_url, namespace="api")),
     url(r'^(?P<username>[-_\w]+)/$', ProfileDetailView.as_view(), name="user_profile"),
     url(r'^', include(data_analysis, namespace="data_analysis")),
-    url(r'^api/$', include(api_url, namespace="api")),
 ]
