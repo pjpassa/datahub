@@ -18,55 +18,59 @@
     {% endfor %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="page-header">{{ object.name }}</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="page-header"><a href="{% url "user_profile" username=object.profile.user.username %}">{{ object.profile.user.username }}</a> / <a href="{{ object.link }}">{{ object.name }}</a></h2>
+            </div>
+            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.col-lg-12 -->
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Datasets
-                </div>
-                <!-- .panel-heading -->
-                <div class="panel-body">
-                    <a class="btn btn-outline btn-primary" href="{{ project.dataset_upload_link }}"><i class="fa fa-upload"></i> Upload New Dataset</a>
-                    <hr>
-                    <div class="panel-group" id="accordion">
-                        {% for dataset in object.dataset_set.all %}
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#{{ dataset.name }}"><i class="fa fa-table"></i> {{ dataset.name }}</a>
-                                    </h4>
-                                </div>
-                                <div id="{{ dataset.name }}" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                        <div class="col-md-4">
-                                            <p>
-                                                <a class="btn btn-outline btn-primary btn-block" href="{{ dataset.link }}">Go to</a>
-                                            </p>
-                                            <hr>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="table-responsive"><div overflow="scroll">
-                                            {{ dataset.head_as_html|safe }}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3>Datasets</h3>
+                    </div>
+                    <!-- .panel-heading -->
+                    <div class="panel-body">
+                        {% if request.user = object.profile.user %}
+                            <a class="btn btn-outline btn-primary" href="{{ project.dataset_upload_link }}"><i class="fa fa-upload"></i> Upload New Dataset</a>
+                            <hr>
+                        {% endif %}
+                        <div class="panel-group" id="accordion">
+                            {% for dataset in object.dataset_set.all %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#{{ dataset.name }}"><i class="fa fa-table"></i> {{ dataset.name }}</a>
+                                        </h4>
+                                    </div>
+                                    <div id="{{ dataset.name }}" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="col-md-3">
+                                                <p>
+                                                    <a class="btn btn-outline btn-primary btn-block" href="{{ dataset.link }}">Go to</a>
+                                                </p>
+                                                <hr>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <div class="table-scroll">
+                                                        {{ dataset.head_as_html|safe }}
+                                                    </div>
                                                 </div>
-                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
+                    <!-- .panel-body -->
                 </div>
-                <!-- .panel-body -->
+                <!-- /.panel -->
             </div>
-            <!-- /.panel -->
+            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.col-lg-12 -->
     </div>
-
 {% endblock %}

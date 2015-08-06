@@ -1,26 +1,84 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block body %}
-    <h2>Available Datasets</h2>
-    <ul>
-        {% for data in object.project.dataset_set.all %}
-            <li>{{ data.name }}{% if data.name == object.name %} *{% endif %} </li>
-        {% endfor %}
+    <div id="page-wrapper">
+        <div class="page-header"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Code
+                    </div>
+                    <div class="panel-body">
+                        <form method="post" role="form" action="{{ object.query_link }}">
+                            {% csrf_token %}
+                            {% for field in code_form %}
+                                {% render_field field class+="form-control" autofocus="" %}
+                            {% endfor %}
+                            <br/>
+                            <input class="btn btn-outline btn-success" type="submit" value="run">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if request.user == object.project.profile.user %}
+        <p></p>
+        <form method="post" action="{{ object.link }}delete/">
+            {% csrf_token %}
+            <p><input class="btn btn-outline btn-danger" type="submit" value="delete dataset"></p>
+        </form>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>
+                            <a href="{{ object.project.link }}">{{ object.project.name }}</a> / <a href="{{ object.link }}">{{ object.name }}</a>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div class="table-scroll">
+                                {{ object.head_as_html|safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p></p>
+    </div>
+{% endblock %}
 
-    </ul>
-    <p>* - Current Dataset</p>
-    <form method="post" action="{{ object.query_link }}">
-        {% csrf_token %}
-        {{ code_form.as_p }}
-        <input type="submit" value="run">
-    </form>
-    {% if request.user == object.project.profile.user %}
-    <p></p>
-    <form method="post" action="{{ object.link }}delete/">
-        {% csrf_token %}
-        <p><input type="submit" value="delete dataset"></p>
-    </form>
-    {% endif %}
-    <p><a href="{{ object.project.link }}">{{ object.project.name }}</a></p>
-    {{ object.head_as_html|safe }}
+
+
+
+
+{% block sidebar %}
+    <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        {% for project_dataset in object.project.dataset_set.all %}
+                            <li>
+                                <a href="{{ project_dataset.link }}" {% if project_dataset == object %}class="active"><strong{% endif %}><i class="fa fa-table fa-fw"></i> {{ project_dataset.name }}{% if project_dataset == object %}</strong>{% endif %}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
 {% endblock %}

@@ -26,6 +26,9 @@
     <!-- Custom Fonts -->
     <link href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 
+    <!-- Project CSS -->
+    <link href="{% static "style.css" %}" rel="stylesheet" type="text/css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -301,7 +304,6 @@
                 <!-- /.dropdown -->
             </ul>
             <!-- /.navbar-top-links -->
-
         {% comment %}
 
         <!-- Commenting out sidebar -->
@@ -417,9 +419,11 @@
         <div id="page-wrapper">
 
         {% endcomment %}
+        {% block sidebar %}
+        {% endblock %}
 
-        <div class="container">
-            <div class="page-header"></div>
+
+            </nav>
 
             {% block body %}
 
@@ -435,9 +439,6 @@
                 <!-- /.container-fluid -->
 
             {% endblock %}
-
-        <!-- /#page-wrapper -->
-        </div>
 
     </div>
     <!-- /#wrapper -->

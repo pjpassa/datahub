@@ -1,0 +1,10 @@
+.black-text{
+    color: #333;
+}
+.table-scroll{
+    overflow: scroll;
+}
+
+.table-border{
+    border: 1px black;
+}
