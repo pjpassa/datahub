@@ -11,10 +11,10 @@
                         Code
                     </div>
                     <div class="panel-body">
-                        <form method="post" role="form" action="{{ object.query_link }}">
+                        <form method="post" role="form" action="{{ object.query_link }}" data-spy="affix-top" data-offset-top="20px">
                             {% csrf_token %}
                             {% for field in code_form %}
-                                {% render_field field class+="form-control" autofocus="" %}
+                                {% render_field field class+="form-control" autofocus="" rows=3 %}
                             {% endfor %}
                             <br/>
                             <input class="btn btn-outline btn-success" type="submit" value="run">
@@ -48,8 +48,31 @@
                 </div>
             </div>
         </div>
+
         <p></p>
-    </div>
+    </div><table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Extn.</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Extn.</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>
+    </table>
 {% endblock %}
 
 
@@ -81,4 +104,14 @@
                 <!-- /.sidebar-collapse -->
             </div>
             <!-- /.navbar-static-side -->
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#example').dataTable( {
+                "ajax": "{% url  %}"
+    </script>
 {% endblock %}
