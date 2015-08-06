@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
+{% load general_filters %}
 
 {% block body %}
     <div class="container">
@@ -12,7 +13,7 @@
                         </h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" method="post">
+                        <form role="form" method="post" {{ form|form_type }}>
                             {% csrf_token %}
                             <fieldset>
                                 {% for field in form %}
@@ -23,13 +24,13 @@
                                             <div class="form-group">
                                         {% endif %}
                                         {% if forloop.first %}
-                                            {% if field|widget_type == "clearablefileinput" %}
+                                            {% if field|type_widget == "ClearableFileInput" %}
                                             {% render_field field %}
                                             {% else %}
                                             {% render_field field class+="form-control" placeholder=field.label autofocus="" %}
                                         {% endif %}
                                         {% else %}
-                                            {% if field|widget_type == "checkboxinput" %}
+                                            {% if field|type_widget == "CheckboxInput" %}
                                                 {% render_field field class+="form-checkbox"%} <label>{{ field.label }}</label>
                                             {% else %}
                                                 {% render_field field class+="form-control" placeholder=field.label %}

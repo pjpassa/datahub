@@ -1,5 +1,7 @@
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from picklefield import PickledObjectField
 from datahub.helpers.validators import start_with_letter_validator, contains_only_letters_dash_underscore_validator
 from user_profiles.models import Profile
@@ -35,6 +37,7 @@ class Dataset(models.Model):
                                         contains_only_letters_dash_underscore_validator])
     project = models.ForeignKey(Project)
     data = PickledObjectField()
+    head = PickledObjectField()
 
     class Meta:
         unique_together = ("name", "project")
@@ -44,20 +47,14 @@ class Dataset(models.Model):
                                  self.project.name,
                                  self.name)
 
-    def as_html(self, num_rows=0, head=None):
-        df = self.data
-        if num_rows:
-            if head is None:
-                raise ValueError("num_rows was defined, but head was not set. Define head as True or False")
-            if head:
-                df = df.head(num_rows)
-            else:
-                df = df.tail(num_rows)
-        return df.to_html()
+    def as_html(self, head=True):
+        if head:
+            return self.head.to_html()
+        return self.data.tail.to_html()
 
     @property
     def head_as_html(self):
-        return self.as_html(20, True)
+        return self.as_html()
 
     @property
     def query_link(self):
@@ -72,3 +69,13 @@ class Dataset(models.Model):
                             kwargs={"username": self.project.profile.user.username,
                                     "project": self.project.name,
                                     "dataset": self.name})
+
+    @property
+    def api_link(self):
+        return reverse_lazy("api:dataset",
+                            kwargs={"pk": self.pk})
+
+@receiver(pre_save, sender=Dataset)
+def update_head(instance, **kwargs):
+    if instance.data is not None:
+        instance.head = instance.data.head(20)
