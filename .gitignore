@@ -61,3 +61,4 @@ target/
 *.sqlite3
 .direnv
 secretsettings.py
+.DS_Store

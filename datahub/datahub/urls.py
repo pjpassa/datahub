@@ -20,6 +20,7 @@ from django.core.urlresolvers import reverse_lazy
 from user_profiles.views import ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDetailView
 from user_registration import urls as user_reg
 from data_analysis import urls as data_analysis
+from api import urls as api_url
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls), name="admin"),
@@ -35,4 +36,5 @@ urlpatterns = [
     url(r'^update_profile/$', ProfileUpdateView.as_view(), name="update"),
     url(r'^(?P<username>[-_\w]+)/$', ProfileDetailView.as_view(), name="user_profile"),
     url(r'^', include(data_analysis, namespace="data_analysis")),
+    url(r'^api/$', include(api_url, namespace="api")),
 ]
