@@ -2,19 +2,18 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import picklefield.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_analysis', '0002_auto_20150730_0928'),
+        ('data_analysis', '0001_initial'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RenameField(
             model_name='dataset',
-            name='data',
-            field=picklefield.fields.PickledObjectField(editable=False),
+            old_name='columns',
+            new_name='column_list',
         ),
     ]

@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from picklefield import PickledObjectField
 from datahub.helpers.validators import start_with_letter_validator, contains_only_letters_dash_underscore_validator
@@ -38,6 +38,10 @@ class Dataset(models.Model):
     project = models.ForeignKey(Project)
     data = PickledObjectField()
     head = PickledObjectField()
+    column_list = PickledObjectField()
+    num_obs = models.IntegerField()
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("name", "project")
@@ -79,3 +83,5 @@ class Dataset(models.Model):
 def update_head(instance, **kwargs):
     if instance.data is not None:
         instance.head = instance.data.head(20)
+        instance.column_list =instance.head.columns
+        instance.num_obs = len(instance.data.index)

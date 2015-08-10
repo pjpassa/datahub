@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block body %}
     <div id="page-wrapper">
@@ -11,13 +12,13 @@
                         Code
                     </div>
                     <div class="panel-body">
-                        <form method="post" role="form" action="{{ object.query_link }}" data-spy="affix-top" data-offset-top="20px">
+                        <form method="post" role="form" action="{{ object.query_link }}" id="code_form">
                             {% csrf_token %}
                             {% for field in code_form %}
                                 {% render_field field class+="form-control" autofocus="" rows=3 %}
                             {% endfor %}
                             <br/>
-                            <input class="btn btn-outline btn-success" type="submit" value="run">
+                            <input class="btn btn-outline btn-success" id="run_code" type="submit" value="run">
                         </form>
                     </div>
                 </div>
@@ -39,40 +40,22 @@
                         </h3>
                     </div>
                     <div class="panel-body">
-                        <div class="table-responsive">
+                        <div class="dataTable_wrapper">
                             <div class="table-scroll">
-                                {{ object.head_as_html|safe }}
+                                <table class="table table-striped table-bordered compact" id="dataset">
+                                    <thead>
+                                        {% for column in object.column_list %}
+                                            <th>{{ column }}</th>
+                                        {% endfor %}
+                                    </thead>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <p></p>
-    </div><table id="example" class="display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
-    </table>
+    </div>
 {% endblock %}
 
 
@@ -83,16 +66,8 @@
     <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                            <!-- /input-group -->
+                        <li>
+                            <a href="{{ object.project.link }}">{{ object.project.name }} Datasets</a>
                         </li>
                         {% for project_dataset in object.project.dataset_set.all %}
                             <li>
@@ -108,10 +83,43 @@
 
 {% block scripts %}
 
-    <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#example').dataTable( {
-                "ajax": "{% url "home" %}"}});
+    <!-- DataTables JavaScript -->
+    <script src="{% static "bower_components/datatables/media/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js" %}"></script>
+    <script type="application/javascript">
+
+        var initLoad = function(table, url) {
+            table.dataTable({
+                ajax: url,
+                responsive: true
+            });/*
+            $.getJSON(url, function (response) {
+                data = {"data": response.data};
+                console.log(data);
+                table.dataTable({
+                    ajax:
+                    columns: response.columns
+                });
+            });*/
+        };
+
+        var run_code = function() {
+            var form = $("#code_form");
+            $.ajax({
+                url: "{{ object.query_link }}",
+                type: "post",
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(response) {
+                    initLoad($("#dataset"), response.url)
+                }
+            })
+        };
+
+        $('document').ready(function() {
+            initLoad($("#dataset"), "{{ object.api_link }}");
+            $("#run_code").click(run_code())
+        });
     </script>
+
 {% endblock %}
