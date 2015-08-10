@@ -47,6 +47,8 @@ INSTALLED_APPS = (
     'api',
     'widget_tweaks',
     'frontend',
+    'rest_framework.authtoken',
+    'code_processing',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -120,5 +122,9 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
 }

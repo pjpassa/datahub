@@ -3,7 +3,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render_to_response
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
 from pandasql import sqldf
-from data_analysis.forms import CodeForm
+
+from code_processing.forms import CodeForm
 from data_analysis.models import Dataset, Project
 from datahub.helpers.mixins import AddProfileToFormMixin, VerifyUserBeforeDeletionMixin, ProvideProjectFromURLMixin, \
     ProvideDatasetFromURLMixin, AddContextInAsViewMixin
@@ -88,6 +89,6 @@ def dataset_query_view(request, username, project, dataset):
         datasets = {data.name: data.data for data in project.dataset_set.all()}
         code = request.POST.get("code")
         context = {'result': sqldf(code, datasets).head(20).to_html(),
-                   object: dataset,
-                   code: code}
+                   'object': dataset,
+                   'code': code}
         return render_to_response("data_analysis/dataset_query.html", context=context)

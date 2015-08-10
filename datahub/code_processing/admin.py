@@ -1,3 +1,5 @@
 from django.contrib import admin
+from code_processing.models import SubmittedCode
 
-# Register your models here.
+
+admin.site.register(SubmittedCode)

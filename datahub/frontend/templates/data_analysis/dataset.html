@@ -12,11 +12,12 @@
                         Code
                     </div>
                     <div class="panel-body">
-                        <form method="post" role="form" action="{{ object.query_link }}" id="code_form">
+                        <form role="form" id="code_form">
                             {% csrf_token %}
                             {% for field in code_form %}
                                 {% render_field field class+="form-control" autofocus="" rows=3 %}
                             {% endfor %}
+                            <input type="hidden" name="project_id" value="{{ object.project.id }}"/>
                             <br/>
                             <input class="btn btn-outline btn-success" id="run_code" type="submit" value="run">
                         </form>
@@ -103,10 +104,11 @@
             });*/
         };
 
-        var run_code = function() {
+        var run_code = function(e) {
+            e.preventDefault();
             var form = $("#code_form");
             $.ajax({
-                url: "{{ object.query_link }}",
+                url: "{% url "api:code" %}",
                 type: "post",
                 dataType: 'json',
                 data: form.serialize(),
@@ -118,7 +120,7 @@
 
         $('document').ready(function() {
             initLoad($("#dataset"), "{{ object.api_link }}");
-            $("#run_code").click(run_code())
+            $("#run_code").click(run_code);
         });
     </script>
 
