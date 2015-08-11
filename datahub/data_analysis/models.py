@@ -30,6 +30,12 @@ class Project(models.Model):
                             kwargs={"username": self.profile.user.username,
                                     "project": self.name})
 
+    def project_fork_link(self):
+        return reverse_lazy("data_analysis:fork_project",
+                            kwargs={"username": self.profile.user.username,
+                                    "project": self.name})
+
+
 
 class Dataset(models.Model):
     name = models.CharField(max_length=128,

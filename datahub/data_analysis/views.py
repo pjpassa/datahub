@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render_to_response
-from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView, FormView
 from pandasql import sqldf
 
 from code_processing.forms import CodeForm
+from data_analysis.forms import ProjectForkForm
 from data_analysis.models import Dataset, Project
 from datahub.helpers.mixins import AddProfileToFormMixin, VerifyUserBeforeDeletionMixin, ProvideProjectFromURLMixin, \
     ProvideDatasetFromURLMixin, AddContextInAsViewMixin
@@ -92,3 +93,28 @@ def dataset_query_view(request, username, project, dataset):
                    'object': dataset,
                    'code': code}
         return render_to_response("data_analysis/dataset_query.html", context=context)
+
+class ProjectForkView(AddContextInAsViewMixin, ProvideProjectFromURLMixin, FormView):
+    form_class = ProjectForkForm
+    template_name = "single_form_view.html"
+    additional_context = {"panel_title": "Fork Project",
+                          "submit_button_name": "Fork"}
+
+    def form_valid(self, form):
+        project = self.get_object()
+        project.pk = None
+        project.name = form.instance.name
+        project.profile = self.request.user.profile
+        project.save()
+        for dataset in self.get_object().dataset_set.all():
+            dataset.pk = None
+            dataset.project = project
+            dataset.save()
+        for submitted_code in self.get_object().submittedcode_set.all():
+            submitted_code.pk = None
+            submitted_code.project = project
+            submitted_code.save()
+        self.success_url = reverse_lazy("data_analysis:project_detail", kwargs={"username": project.profile.user.username,
+                                                                                "project": project.name})
+        return super().form_valid(form)
+

@@ -17,8 +17,9 @@ class SubmittedCode(models.Model):
 
 @receiver(post_save, sender=SubmittedCode)
 def process_code(instance, created, **kwargs):
-    if not created:
+    if not created or instance.processed:
         return
+    instance.processed = True
     project = instance.project
     datasets = {data.name: data.data for data in project.dataset_set.all()}
     code = instance.code
