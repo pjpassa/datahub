@@ -23,5 +23,6 @@ class SubmittedCodeSerializer(ModelSerializer):
         self.save()
         results = instance.results.all()
         if results:
-            return {"url": results[0].api_link}
+            return {"url": results[0].api_link,
+                    "columns": results[0].column_list}
         return {}

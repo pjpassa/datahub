@@ -90,6 +90,7 @@
     <script type="application/javascript">
 
         var initLoad = function(table, url) {
+            console.log("here");
             table.dataTable({
                 ajax: url,
                 responsive: true
@@ -113,7 +114,20 @@
                 dataType: 'json',
                 data: form.serialize(),
                 success: function(response) {
-                    initLoad($("#dataset"), response.url)
+                    var container = $(".table-scroll");
+                    container.empty();
+                    var table = $('<table></table>').addClass('table table-striped table-bordered compact').attr('id', "test");
+                    var head = $('<thead></thead>');
+                    var row = $('<tr></tr>');
+                    for(i=0; i<response.columns.length; i++) {
+                        console.log(response);
+                        var element = $('<th></th>').text(response.columns[i]);
+                        row.append(element);
+                    }
+                    head.append(row);
+                    table.append(head);
+                    container.append(table);
+                    initLoad(table, response.url)
                 }
             })
         };
