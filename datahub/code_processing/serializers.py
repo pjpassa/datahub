@@ -21,8 +21,7 @@ class SubmittedCodeSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         self.save()
-        results = instance.results.all()
-        if results:
-            return {"url": results[0].api_link,
-                    "columns": results[0].column_list}
-        return {}
+        result = instance.result
+        return {"name": result.name,
+                "url": result.api_link,
+                "columns": result.column_list}

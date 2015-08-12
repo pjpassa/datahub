@@ -12,10 +12,12 @@ class DatasetSerializer(BaseSerializer):
         super().__init__(*args, **kwargs)
 
     def to_representation(self, instance):
-        columns = [{"data": column} for column in instance.column_list]
         request_columns = self.context["request"].query_params.get("columns", None)
         if request_columns:
-            return columns
+            return {'name': instance.name,
+                    'url': instance.api_link,
+                    'columns': instance.column_list}
+        columns = [{"data": column} for column in instance.column_list]
         page = int(self.context["request"].query_params.get("page", self.page_number))
         start = (page - 1) * self.page_size
         end = min(start + self.page_size, instance.num_obs)
@@ -26,7 +28,7 @@ class DatasetSerializer(BaseSerializer):
         if start > 0:
             prev_page = instance.api_link + "?page=" + str(page - 1)
         data = instance.data.iloc[start:end].fillna("NaN").as_matrix()
-        return OrderedDict([('dataset', instance.name),
+        return OrderedDict([('name', instance.name),
                             ('page', page),
                             ('page_size', self.page_size),
                             ('next_page', next_page),

@@ -10,7 +10,7 @@
     border: 1px black;
 }
 
-.dataTables_filter label{
+div.dataTables_filter label{
     display: block;
     text-align: right;
     width: 100%;
@@ -24,4 +24,8 @@
 
 .dataTables_paginate ul{
     margin: 0;
+}
+
+.link_pointer a:hover{
+    cursor: pointer;
 }

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render_to_response
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView, FormView
@@ -110,11 +111,15 @@ class ProjectForkView(AddContextInAsViewMixin, ProvideProjectFromURLMixin, FormV
             dataset.pk = None
             dataset.project = project
             dataset.save()
-        for submitted_code in self.get_object().submittedcode_set.all():
-            submitted_code.pk = None
-            submitted_code.project = project
-            submitted_code.save()
-        self.success_url = reverse_lazy("data_analysis:project_detail", kwargs={"username": project.profile.user.username,
-                                                                                "project": project.name})
+            try:
+                submitted_code = dataset.submittedcode
+                submitted_code.pk = None
+                submitted_code.project = project
+                submitted_code.result = dataset
+            except ObjectDoesNotExist:
+                pass
+        self.success_url = reverse_lazy("data_analysis:project_detail",
+                                        kwargs={"username": project.profile.user.username,
+                                                "project": project.name})
         return super().form_valid(form)
 

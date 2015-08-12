@@ -4,7 +4,8 @@
 
 {% block body %}
     <div id="page-wrapper">
-        <div class="page-header"></div>
+        <br/>
+        {% if request.user == object.project.profile.user %}
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
@@ -19,13 +20,12 @@
                             {% endfor %}
                             <input type="hidden" name="project_id" value="{{ object.project.id }}"/>
                             <br/>
-                            <input class="btn btn-outline btn-success" id="run_code" type="submit" value="run">
+                            <input class="btn btn-outline btn-success" id="submit_code" type="submit" value="run">
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        {% if request.user == object.project.profile.user %}
         <p></p>
         <form method="post" action="{{ object.link }}delete/">
             {% csrf_token %}
@@ -36,8 +36,8 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3>
-                            <a href="{{ object.project.link }}">{{ object.project.name }}</a> / <a href="{{ object.link }}" id="dataset_link">{{ object.name }}</a>
+                        <h3 class="link_pointer">
+                            <a href="{{ object.project.link }}">{{ object.project.name }}</a> / <a id="dataset_link">{{ object.name }}</a>
                         </h3>
                     </div>
                     <div class="panel-body">
@@ -66,7 +66,7 @@
 {% block sidebar %}
     <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
+                    <ul class="nav link_pointer"" id="side-menu">
                         <li>
                             <a href="{{ object.project.link }}">{{ object.project.name }} Datasets</a>
                         </li>
@@ -100,7 +100,7 @@
         var load_datasets = function() {
             var list = $("#side-menu");
             list.empty();
-            var li = $('<li></li>')
+            var li = $('<li></li>');
             var href = $('<a></a>').attr('href', "{{ object.project.link }}").text("{{ object.project.name }} Datasets");
             li.append(href);
             list.append(li);
@@ -116,13 +116,21 @@
                         var a = $('<a></a>').attr("id", name);
                         var strong = $('<strong></strong>');
                         var icon = $('<i></i>').addClass("fa fa-table fa-fw");
-                        strong.append(icon).text(" "+name);
+                        strong.text(" "+name);
+                        a.append(icon);
                         a.append(strong);
+                        a.addClass("link_pointer");
                         if(name === $("#dataset").textContent) {
                             a.addClass("active");
                         }
-                        a.click(function() {
-                            reload_table(response.datasets[i])
+                        a.attr('data-url', response.datasets[i].url + "?columns=1");
+                        a.click({'test': 'test'}, function() {
+                            $.ajax({
+                                url: $(this).attr("data-url"),
+                                type: "get",
+                                dataType: 'json',
+                                success: reload_table
+                            })
                         });
                         li.append(a);
                         list.append(li);
@@ -145,6 +153,8 @@
                 table.append(head);
                 container.append(table);
                 initLoad(table, response.url);
+                console.log(response);
+                $('#dataset_link').text(response.name);
                 load_datasets();
             };
 

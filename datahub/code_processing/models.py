@@ -12,7 +12,7 @@ class SubmittedCode(models.Model):
     processed = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now=True)
     project = models.ForeignKey(Project)
-    results = models.ManyToManyField(Dataset)
+    result = models.OneToOneField(Dataset, null=True)
 
 
 @receiver(post_save, sender=SubmittedCode)
@@ -31,6 +31,8 @@ def process_code(instance, created, **kwargs):
     if not table_name:
         table_name = "query" + str(random.randint(100000,999999))
     df = sqldf(code, datasets)
-    result = Dataset.objects.create(project=project, data=df, name=table_name)
-    instance.results.add(result)
+    if df is not None:
+        result = Dataset.objects.create(project=project, data=df, name=table_name)
+        instance.result = result
+        instance.valid = True
     instance.save()
