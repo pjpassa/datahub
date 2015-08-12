@@ -37,7 +37,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            <a href="{{ object.project.link }}">{{ object.project.name }}</a> / <a href="{{ object.link }}">{{ object.name }}</a>
+                            <a href="{{ object.project.link }}">{{ object.project.name }}</a> / <a href="{{ object.link }}" id="dataset_link">{{ object.name }}</a>
                         </h3>
                     </div>
                     <div class="panel-body">
@@ -72,7 +72,7 @@
                         </li>
                         {% for project_dataset in object.project.dataset_set.all %}
                             <li>
-                                <a href="{{ project_dataset.link }}" {% if project_dataset == object %}class="active"><strong{% endif %}><i class="fa fa-table fa-fw"></i> {{ project_dataset.name }}{% if project_dataset == object %}</strong>{% endif %}</a>
+                                <a id="load_{{ project_dataset.name }}" {% if project_dataset == object %}class="active"><strong{% endif %}><i class="fa fa-table fa-fw"></i> {{ project_dataset.name }}{% if project_dataset == object %}</strong>{% endif %}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -90,22 +90,65 @@
     <script type="application/javascript">
 
         var initLoad = function(table, url) {
-            console.log("here");
             table.dataTable({
                 ajax: url,
                 responsive: true
-            });/*
-            $.getJSON(url, function (response) {
-                data = {"data": response.data};
-                console.log(data);
-                table.dataTable({
-                    ajax:
-                    columns: response.columns
-                });
-            });*/
+            });
         };
 
-        var run_code = function(e) {
+
+        var load_datasets = function() {
+            var list = $("#side-menu");
+            list.empty();
+            var li = $('<li></li>')
+            var href = $('<a></a>').attr('href', "{{ object.project.link }}").text("{{ object.project.name }} Datasets");
+            li.append(href);
+            list.append(li);
+            $.ajax({
+                url: "{% url "api:project" object.project.id %}",
+                type: "get",
+                dataType: 'json',
+                success: function(response) {
+                    var list = $("#side-menu");
+                    for(i=0; i<response.datasets.length; i++) {
+                        var name = response.datasets[i].name;
+                        var li = $('<li></li>');
+                        var a = $('<a></a>').attr("id", name);
+                        var strong = $('<strong></strong>');
+                        var icon = $('<i></i>').addClass("fa fa-table fa-fw");
+                        strong.append(icon).text(" "+name);
+                        a.append(strong);
+                        if(name === $("#dataset").textContent) {
+                            a.addClass("active");
+                        }
+                        a.click(function() {
+                            reload_table(response.datasets[i])
+                        });
+                        li.append(a);
+                        list.append(li);
+                    }
+                }
+            })
+        };
+
+        var reload_table = function(response) {
+                var container = $(".table-scroll");
+                container.empty();
+                var table = $('<table></table>').addClass('table table-striped table-bordered compact').attr('id', "test");
+                var head = $('<thead></thead>');
+                var row = $('<tr></tr>');
+                for(i=0; i<response.columns.length; i++) {
+                    var element = $('<th></th>').text(response.columns[i]);
+                    row.append(element);
+                }
+                head.append(row);
+                table.append(head);
+                container.append(table);
+                initLoad(table, response.url);
+                load_datasets();
+            };
+
+        var submit_code = function(e) {
             e.preventDefault();
             var form = $("#code_form");
             $.ajax({
@@ -113,28 +156,14 @@
                 type: "post",
                 dataType: 'json',
                 data: form.serialize(),
-                success: function(response) {
-                    var container = $(".table-scroll");
-                    container.empty();
-                    var table = $('<table></table>').addClass('table table-striped table-bordered compact').attr('id', "test");
-                    var head = $('<thead></thead>');
-                    var row = $('<tr></tr>');
-                    for(i=0; i<response.columns.length; i++) {
-                        console.log(response);
-                        var element = $('<th></th>').text(response.columns[i]);
-                        row.append(element);
-                    }
-                    head.append(row);
-                    table.append(head);
-                    container.append(table);
-                    initLoad(table, response.url)
-                }
+                success: reload_table
             })
         };
 
         $('document').ready(function() {
             initLoad($("#dataset"), "{{ object.api_link }}");
-            $("#run_code").click(run_code);
+            $("#submit_code").click(submit_code);
+            load_datasets();
         });
     </script>
 

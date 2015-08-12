@@ -35,7 +35,7 @@
                     <div class="panel-body">
                         {% if request.user == object.profile.user %}
                             <a class="btn btn-outline btn-primary" href="{{ project.dataset_upload_link }}"><i class="fa fa-upload"></i> Upload New Dataset</a>
-                            <hr>
+                            <hr/>
                         {% endif %}
                         {% if request.user.profile %}
                             <a class="btn btn-outline btn-primary" href="{{ project.project_fork_link }}"><i class="fa fa-code-fork"></i> Fork Project</a>

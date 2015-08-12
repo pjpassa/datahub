@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import BaseSerializer, Serializer, ModelSerializer
+from rest_framework.serializers import BaseSerializer, ModelSerializer
 from data_analysis.models import Project
 
 
@@ -37,11 +37,14 @@ class DatasetSerializer(BaseSerializer):
 
 
 class ProjectSerializer(ModelSerializer):
-    dataset_names = SerializerMethodField()
+    datasets = SerializerMethodField()
 
     class Meta:
         model = Project
-        fields = ["name", "dataset_names"]
+        fields = ["name", "datasets"]
 
-    def get_dataset_names(self, instance):
-        return [dataset.name for dataset in instance.dataset_set.all()]
+    def get_datasets(self, instance):
+        return [{"name": dataset.name,
+                 "url": dataset.api_link,
+                 "columns": dataset.column_list} for dataset in instance.dataset_set.all()]
+
