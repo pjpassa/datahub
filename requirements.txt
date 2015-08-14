@@ -1,6 +1,10 @@
 Django==1.8.3
+django-filter==0.10.0
 django-picklefield==0.3.1
+django-widget-tweaks==1.4.1
+djangorestframework==3.1.3
 -e git+https://github.com/yigor/django-jsonfield.git@60bc57449ca76e1814d915eee135185e50108778#egg=jsonfield-master
+Markdown==2.6.2
 numpy==1.9.2
 pandas==0.16.2
 pandasql==0.6.3

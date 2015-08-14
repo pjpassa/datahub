@@ -1,27 +1,16 @@
 {% extends "base.html" %}
-    {% if request.user == object.profile.user %}
-        <div>
-        <form method="POST" action="{{ object.dataset_upload_link }}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ upload_form.as_p }}
-            <input type="submit" name="upload">
-            <p></p>
-        <form method="post" action="{{ object.link }}delete/">
-        {% csrf_token %}
-        <p><input type="submit" value="delete project"></p>
-    </form>
-        </form>
-        </div>
-    {% endif %}
-    {% for dataset in object.dataset_set.all %}
-        <a href="{{ dataset.link }}">{{ dataset.name }}</a>
-    {% endfor %}
+{% load staticfiles %}
 
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-10">
                 <h2 class="page-header"><a href="{% url "user_profile" username=object.profile.user.username %}">{{ object.profile.user.username }}</a> / <a href="{{ object.link }}">{{ object.name }}</a></h2>
+            </div>
+            <div class="col-md-2 pull-right">
+                {% if request.user.profile %}
+                    <a class="btn btn-outline btn-primary page-header" href="{{ project.project_fork_link }}"><i class="fa fa-code-fork"></i> Clone Project</a>
+                {% endif %}
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -37,10 +26,6 @@
                             <a class="btn btn-outline btn-primary" href="{{ project.dataset_upload_link }}"><i class="fa fa-upload"></i> Upload New Dataset</a>
                             <hr/>
                         {% endif %}
-                        {% if request.user.profile %}
-                            <a class="btn btn-outline btn-primary" href="{{ project.project_fork_link }}"><i class="fa fa-code-fork"></i> Fork Project</a>
-                            <hr>
-                        {% endif %}
                         <div class="panel-group" id="accordion">
                             {% for dataset in object.dataset_set.all %}
                                 <div class="panel panel-default">
@@ -53,14 +38,22 @@
                                         <div class="panel-body">
                                             <div class="col-md-3">
                                                 <p>
-                                                    <a class="btn btn-outline btn-primary btn-block" href="{{ dataset.link }}">Go to</a>
+                                                    <a class="btn btn-outline btn-primary btn-block" href="{{ dataset.link }}">Create Query</a>
                                                 </p>
-                                                <hr>
+                                                <hr/>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="table-responsive">
                                                     <div class="table-scroll">
-                                                        {{ dataset.head_as_html|safe }}
+                                                        <table class="table table-striped table-bordered compact" id="dataset_{{ dataset.name }}">
+                                                            <thead>
+                                                                <tr>
+                                                                    {% for column in dataset.column_list %}
+                                                                        <th>{{ column }}</th>
+                                                                    {% endfor %}
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -77,4 +70,29 @@
             <!-- /.col-lg-12 -->
         </div>
     </div>
+{% endblock %}
+
+
+
+{% block scripts %}
+
+    <!-- DataTables JavaScript -->
+    <script src="{% static "bower_components/datatables/media/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js" %}"></script>
+    <script type="application/javascript">
+
+        var initLoad = function(table, url) {
+            table.dataTable({
+                ajax: url,
+                responsive: true
+            });
+        };
+
+        $('document').ready(function() {
+            {% for dataset in project.dataset_set.all %}
+                initLoad($("#dataset_" + "{{ dataset.name }}"), "{{ dataset.api_link }}");
+            {% endfor %}
+        });
+    </script>
+
 {% endblock %}

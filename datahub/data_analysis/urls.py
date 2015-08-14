@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from data_analysis.api import DatasetRetrieveAPIView
 from data_analysis.views import DatasetDetailView, ProjectDetailView, ProjectCreateView, ProjectDeleteView, \
-    DatasetDeleteView, dataset_query_view, ProjectForkView
+    DatasetDeleteView, dataset_query_view, ProjectCloneView
 from fileupload.views import DatafileUploadView
 
 
@@ -17,7 +17,7 @@ urlpatterns = [
         name="delete_project"),
 
     url(r'^(?P<username>[-\w]+)/(?P<project>[-\w]+)/fork/$',
-        ProjectForkView.as_view(),
+        ProjectCloneView.as_view(),
         name="fork_project"),
 
     url(r'^(?P<username>[-\w]+)/(?P<project>[-\w]+)/(?P<dataset>[-\w]+)/delete/$',

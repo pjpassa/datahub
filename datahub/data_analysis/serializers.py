@@ -8,7 +8,7 @@ class DatasetSerializer(BaseSerializer):
 
     def __init__(self, *args, **kwargs):
         self.page_number = kwargs.pop('page_number', 1)
-        self.page_size = kwargs.pop('page_size', 100)
+        self.page_size = kwargs.pop('page_size', 10000)
         super().__init__(*args, **kwargs)
 
     def to_representation(self, instance):

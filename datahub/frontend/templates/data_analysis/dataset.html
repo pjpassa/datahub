@@ -26,11 +26,7 @@
                 </div>
             </div>
         </div>
-        <p></p>
-        <form method="post" action="{{ object.link }}delete/">
-            {% csrf_token %}
-            <p><input class="btn btn-outline btn-danger" type="submit" value="delete dataset"></p>
-        </form>
+        <br/>
         {% endif %}
         <div class="row">
             <div class="col-md-12">
@@ -56,6 +52,14 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-2 col-md-offset-10">
+                <form method="post" action="{{ object.link }}delete/" id="delete_form">
+                    {% csrf_token %}
+                    <p><input class="btn btn-outline btn-danger" type="submit" value="delete dataset" id="delete_dataset"></p>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -66,7 +70,7 @@
 {% block sidebar %}
     <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav link_pointer"" id="side-menu">
+                    <ul class="nav link_pointer" id="side-menu">
                         <li>
                             <a href="{{ object.project.link }}">{{ object.project.name }} Datasets</a>
                         </li>
@@ -100,8 +104,10 @@
         var load_datasets = function() {
             var list = $("#side-menu");
             list.empty();
-            var li = $('<li></li>');
-            var href = $('<a></a>').attr('href', "{{ object.project.link }}").text("{{ object.project.name }} Datasets");
+            var li = $('<li></li>').attr("style", "text-align:center");
+            var href = $('<a></a>').attr('href', "{{ object.project.link }}");
+            var heading = $('<h4></h4>').text("{{ object.project.name }} Datasets");
+            href.append(heading);
             li.append(href);
             list.append(li);
             $.ajax({
@@ -153,8 +159,8 @@
                 table.append(head);
                 container.append(table);
                 initLoad(table, response.url);
-                console.log(response);
                 $('#dataset_link').text(response.name);
+                $('#delete_form').attr('action', "{{ object.project.link }}" + response.name + "/delete/");
                 load_datasets();
             };
 

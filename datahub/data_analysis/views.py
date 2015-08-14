@@ -95,11 +95,11 @@ def dataset_query_view(request, username, project, dataset):
                    'code': code}
         return render_to_response("data_analysis/dataset_query.html", context=context)
 
-class ProjectForkView(AddContextInAsViewMixin, ProvideProjectFromURLMixin, FormView):
+class ProjectCloneView(AddContextInAsViewMixin, ProvideProjectFromURLMixin, FormView):
     form_class = ProjectForkForm
     template_name = "single_form_view.html"
-    additional_context = {"panel_title": "Fork Project",
-                          "submit_button_name": "Fork"}
+    additional_context = {"panel_title": "Clone Project",
+                          "submit_button_name": "Clone"}
 
     def form_valid(self, form):
         project = self.get_object()
@@ -122,4 +122,8 @@ class ProjectForkView(AddContextInAsViewMixin, ProvideProjectFromURLMixin, FormV
                                         kwargs={"username": project.profile.user.username,
                                                 "project": project.name})
         return super().form_valid(form)
+
+    def get_initial(self):
+        self.initial = {"name": self.get_object().name}
+        return super().get_initial()
 

@@ -1,9 +1,63 @@
 {% extends "base.html" %}
 
+
 {% block body %}
-    <ul>
-    {% for object in object_list %}
-            <li><a href="{% url "user_profile" username=object.user.username %}">{{ object.user.username }}</a></li>
-    {% endfor %}
-    </ul>
+
+    <div class="container">
+        <h2><br/></h2>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                {% if not request.user.is_authenticated %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{% url "login" %}" class="btn btn-success btn-outline">
+                                Login
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url "register:register" %}" class="btn btn-success btn-outline pull-right">
+                                Register
+                            </a>
+                        </div>
+                    </div>
+                    <br/>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h2>
+                                            Users
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- .panel-heading -->
+                            <div class="panel-body">
+                                {% for object in object_list %}
+                                    <h5>
+                                        <a href="{% url "user_profile" username=object.user.username %}">
+                                            <i class="fa fa-user"></i> <strong>{{ object.user.username }}</strong>
+                                        </a>
+                                    </h5>
+                                    {% if not forloop.last %}
+                                        <hr>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <!-- .panel-body -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+
+
 {% endblock %}
